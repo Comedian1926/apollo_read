@@ -1,4 +1,4 @@
-/******************************************************************************
+ /******************************************************************************
  * Copyright 2017 The Apollo Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,8 +125,7 @@ void Control::OnPad(const PadMessage &pad) {
   pad_received_ = true;
 }
 
-void Control::OnMonitor(
-    const common::monitor::MonitorMessage &monitor_message) {
+void Control::OnMonitor(const common::monitor::MonitorMessage &monitor_message) {
   for (const auto &item : monitor_message.item()) {
     if (item.log_level() == MonitorMessageItem::FATAL) {
       estop_ = true;
