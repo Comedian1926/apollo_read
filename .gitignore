@@ -31,6 +31,9 @@ modules/perception/cuda_util/build
 # atom.io files
 *.gch
 
+#Subline
+*.sublime-workspace
+
 # Logs.
 *.stdout
 *.stderr
