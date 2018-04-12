@@ -484,19 +484,23 @@ class Adapter : public AdapterBase {
    * @brief push the shared-pointer-guarded data to the data queue of
    * the adapter.
    */
-  void EnqueueData(const DataPtr& data) {
-    if (enable_dump_) {
+  void EnqueueData(const DataPtr& data) 
+  {
+    if (enable_dump_) 
+    {
       DumpMessage<D>(*data);
     }
 
     // Don't try to copy data and enqueue if the message_num is 0
-    if (message_num_ == 0) {
+    if (message_num_ == 0) 
+    {
       return;
     }
 
     // Lock the queue.
     std::lock_guard<std::mutex> lock(mutex_);
-    if (data_queue_.size() + 1 > message_num_) {
+    if (data_queue_.size() + 1 > message_num_) 
+    {
       data_queue_.pop_back();
     }
     data_queue_.push_front(data);

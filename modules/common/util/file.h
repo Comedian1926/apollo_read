@@ -154,7 +154,7 @@ bool GetProtoFromBinaryFile(const std::string &file_name,
  * @param message The proto to carry the parsed content in the specified file.
  * @return If the action is successful.
  */
-template <typename MessageType>
+template <typename MessageType>//函数模版->用来读取二进制或者非二进制文件
 bool GetProtoFromFile(const std::string &file_name, MessageType *message) {
   // Try the binary parser first if it's much likely a binary proto.
   if (EndWith(file_name, ".bin")) {

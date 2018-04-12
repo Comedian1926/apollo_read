@@ -93,6 +93,8 @@ However, there will be nothing running in the system.
 To see if the system works, use the demo 'bag' which feeds the system.
 
 ```
+# Apollo代码阅读注释心得
+
 # get rosbag note that the command download is required
 bash ./docs/demo_guide/rosbag_helper.sh download
 

@@ -50,10 +50,13 @@ namespace adapter {
 /// REGISTER_ADAPTER(CarStatus) write an adapter class called
 /// CarStatusAdapter, and call EnableCarStatus(`car_status_topic`,
 /// true, `callback`(if there's one)) in AdapterManager.
-#define REGISTER_ADAPTER(name)                                                 \
- public:                                                                       \
+#define REGISTER_ADAPTER(name) //##表示：把宏参数名与宏定义代码序列中的标识符连接在一起，形成一个新的标识符                                                \
+ public: 
+ ///##表示：把宏参数名与宏定义代码序列中的标识符连接在一起，形成一个新的标识符                \
+
   static void Enable##name(const std::string &topic_name,                      \
-                           const AdapterConfig &config) {                      \
+                           const AdapterConfig &config) 
+  {                                                                            \
     CHECK(config.message_history_limit() > 0)                                  \
         << "Message history limit must be greater than 0";                     \
     instance()->InternalEnable##name(topic_name, config);                      \
@@ -114,14 +117,16 @@ namespace adapter {
   AdapterConfig name##config_;                                                 \
                                                                                \
   void InternalEnable##name(const std::string &topic_name,                     \
-                            const AdapterConfig &config) {                     \
+                            const AdapterConfig &config) 
+  {                                                                            \
     name##_.reset(                                                             \
         new name##Adapter(#name, topic_name, config.message_history_limit())); \
     if (config.mode() != AdapterConfig::PUBLISH_ONLY && IsRos()) {             \
       name##subscriber_ =                                                      \
           node_handle_->subscribe(topic_name, config.message_history_limit(),  \
                                   &name##Adapter::RosCallback, name##_.get()); \
-    }                                                                          \
+    }//config.message_history_limit() -> n.subscribe的queue size
+                                                                              \
     if (config.mode() != AdapterConfig::RECEIVE_ONLY && IsRos()) {             \
       name##publisher_ = node_handle_->advertise<name##Adapter::DataType>(     \
           topic_name, config.message_history_limit(), config.latch());         \
@@ -129,7 +134,9 @@ namespace adapter {
                                                                                \
     observers_.push_back([this]() { name##_->Observe(); });                    \
     name##config_ = config;                                                    \
-  }                                                                            \
+  }              
+
+                                                                \
   name##Adapter *InternalGet##name() { return name##_.get(); }                 \
   void InternalPublish##name(const name##Adapter::DataType &data) {            \
     /* Only publish ROS msg if node handle is initialized. */                  \

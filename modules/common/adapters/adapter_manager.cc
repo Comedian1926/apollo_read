@@ -60,7 +60,7 @@ void AdapterManager::Init(const AdapterManagerConfig &configs) {
   for (const auto &config : configs.config()) {
     switch (config.type()) {
       case AdapterConfig::POINT_CLOUD:
-        EnablePointCloud(FLAGS_pointcloud_topic, config);
+        EnablePointCloud(FLAGS_pointcloud_topic, config); //node_handle_->subscribe 执行的就是订阅动作
         break;
       case AdapterConfig::GPS:
         EnableGps(FLAGS_gps_topic, config);

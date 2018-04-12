@@ -42,27 +42,27 @@ using apollo::localization::LocalizationEstimate;
 using apollo::planning::ADCTrajectory;
 
 std::string Control::Name() const {
-  return FLAGS_control_node_name;
+  return FLAGS_control_node_name;//返回node name字符串
 }
 
 Status Control::Init() {
-  init_time_ = Clock::NowInSeconds();
+  init_time_ = Clock::NowInSeconds();//设置时间
 
-  AINFO << "Control init, starting ...";
+  AINFO << "Control init, starting ..."; //LOG(INFO)
   CHECK(common::util::GetProtoFromFile(FLAGS_control_conf_file, &control_conf_))
-      << "Unable to load control conf file: " + FLAGS_control_conf_file;
+      << "Unable to load control conf file: " + FLAGS_control_conf_file; //添加control的config文件
 
   AINFO << "Conf file: " << FLAGS_control_conf_file << " is loaded.";
 
-  AdapterManager::Init(FLAGS_control_adapter_config_filename);
+  AdapterManager::Init(FLAGS_control_adapter_config_filename);//饶了一大圈就是开一个订阅
 
   common::monitor::MonitorLogBuffer buffer(&monitor_logger_);
 
-  // set controller
-  if (!controller_agent_.Init(&control_conf_).ok()) {
+  // set controller -> controller_agent_.Init(&control_conf_) -> controller_agent.cc
+  if (!controller_agent_.Init(&control_conf_).ok()) {      //status.h
     std::string error_msg = "Control init controller failed! Stopping...";
     buffer.ERROR(error_msg);
-    return Status(ErrorCode::CONTROL_INIT_ERROR, error_msg);
+    return Status(ErrorCode::CONTROL_INIT_ERROR, error_msg); //status.h
   }
 
   // lock it in case for after sub, init_vehicle not ready, but msg trigger
@@ -84,7 +84,7 @@ Status Control::Init() {
   AdapterManager::AddPadCallback(&Control::OnPad, this);
   AdapterManager::AddMonitorCallback(&Control::OnMonitor, this);
 
-  return Status::OK();
+  return Status::OK(); //status.h
 }
 
 Status Control::Start() {

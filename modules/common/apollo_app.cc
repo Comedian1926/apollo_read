@@ -54,8 +54,9 @@ void ApolloApp::ExportFlags() const {
 }
 
 int ApolloApp::Spin() {
-  auto status = Init();
-  if (!status.ok()) {
+  auto status = Init();//运行Control::Init
+  if (!status.ok()) 
+  {
     AERROR << Name() << " Init failed: " << status;
     return -1;
   }
