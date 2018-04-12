@@ -36,17 +36,17 @@ void ControllerAgent::RegisterControllers(const ControlConf *control_conf) {
   AINFO << "Only support MPC controller or Lat + Lon controllers as of now";
   for (auto active_controller : control_conf->active_controllers()) {
     switch (active_controller) {
-      case ControlConf::MPC_CONTROLLER:
+      case ControlConf::MPC_CONTROLLER://模型预测控制
         controller_factory_.Register(
             ControlConf::MPC_CONTROLLER,
             []() -> Controller * { return new MPCController(); });
         break;
-      case ControlConf::LAT_CONTROLLER:
+      case ControlConf::LAT_CONTROLLER: //Lateral Control横向控制
         controller_factory_.Register(
             ControlConf::LAT_CONTROLLER,
             []() -> Controller * { return new LatController(); });
         break;
-      case ControlConf::LON_CONTROLLER:
+      case ControlConf::LON_CONTROLLER: //Longitudinal control纵向控制
         controller_factory_.Register(
             ControlConf::LON_CONTROLLER,
             []() -> Controller * { return new LonController(); });
@@ -78,7 +78,7 @@ Status ControllerAgent::InitializeConf(const ControlConf *control_conf) {
 }
 
 Status ControllerAgent::Init(const ControlConf *control_conf) {
-  RegisterControllers(control_conf);
+  RegisterControllers(control_conf);//
   CHECK(InitializeConf(control_conf).ok()) << "Fail to initialize config.";
   for (auto &controller : controller_list_) {
     if (controller == NULL || !controller->Init(control_conf_).ok()) {

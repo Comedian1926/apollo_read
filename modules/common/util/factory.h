@@ -57,7 +57,8 @@ namespace util {
 template <typename IdentifierType, class AbstractProduct,
           class ProductCreator = AbstractProduct *(*)(),
           class MapContainer = std::map<IdentifierType, ProductCreator>>
-class Factory {
+class Factory 
+{
  public:
   /**
    * @brief Registers the class given by the creator function, linking it to id.
