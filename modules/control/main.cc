@@ -18,4 +18,4 @@
 #include "modules/control/common/control_gflags.h"
 #include "modules/control/control.h"
 
-APOLLO_MAIN(apollo::control::Control);
+APOLLO_MAIN(apollo::control::Control);//apollo_app.h中的宏定义

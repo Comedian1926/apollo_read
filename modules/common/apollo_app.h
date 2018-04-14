@@ -117,11 +117,11 @@ void apollo_app_sigint_handler(int signal_num);
 #define APOLLO_MAIN(APP)                                       \
   int main(int argc, char **argv) {                            \
     google::InitGoogleLogging(argv[0]);//google glog -> 初始化 glog
-    google::ParseCommandLineFlags(&argc, &argv, true);//解析命令行参数，一般都放在 main 函数中开始位置
+    google::ParseCommandLineFlags(&argc, &argv, true);//google glog -> 解析命令行参数，一般都放在 main 函数中开始位置
     signal(SIGINT, apollo::common::apollo_app_sigint_handler); \
     APP apollo_app_;                                           \
     ros::init(argc, argv, apollo_app_.Name());//程序开始的地方,apollo_app_.Name():gflags以命令行参数形式传入node name，c++中命令行 参数就是字符串
-    apollo_app_.Spin();//
+    apollo_app_.Spin();//在这运行Control::Init
     return 0;                                                  \
   }
 
