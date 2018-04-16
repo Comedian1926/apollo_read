@@ -54,13 +54,13 @@ class Status {
    * @param code the error code.
    * @param msg the message associated with the error.
    */
-  Status(ErrorCode code, const std::string &msg) : code_(code), msg_(msg) {}
-
+  Status(ErrorCode code, const std::string &msg) : code_(code), msg_(msg) {} //重载构造函数Status()
   /**
    * @brief Create a status with the specified error code and empty msg
    * @param code the error code.
    */
-  explicit Status(ErrorCode code) : code_(code), msg_("") {}
+
+  explicit Status(ErrorCode code) : code_(code), msg_("") {} //重载构造函数Status()+防止隐式调用(一个参数的`构造函数`(或者除了第一个参数外其余参数都有默认值的`多参构造函数`))
 
   /**
    * @brief generate a success status.
@@ -73,7 +73,7 @@ class Status {
    * @returns true if the code is ErrorCode::OK
    *          false otherwise
    */
-  bool ok() const { return code_ == ErrorCode::OK; }
+  bool ok() const { return code_ == ErrorCode::OK; } //默认true, 因为初始化列表:Status() : "code_(ErrorCode::OK)", msg_() {}
 
   /**
    * @brief get the error code
@@ -84,14 +84,14 @@ class Status {
   /**
    * @brief defines the logic of testing if two Status are equal
    */
-  bool operator==(const Status &rh) const {
+  bool operator==(const Status &rh) const { //重载运算符`==`
     return (this->code_ == rh.code_) && (this->msg_ == rh.msg_);
   }
 
   /**
    * @brief defines the logic of testing if two Status are unequal
    */
-  bool operator!=(const Status &rh) const { return !(*this == rh); }
+  bool operator!=(const Status &rh) const { return !(*this == rh); }//重载运算符`!=`
 
   /**
    * @brief returns the error message of the status, empty if the status is OK.

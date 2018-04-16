@@ -45,7 +45,7 @@ std::string Control::Name() const {
   return FLAGS_control_node_name;//返回node name字符串
 }
 
-Status Control::Init() {
+Status Control::Init() { //return_type function_name( parameter list )    ----   Status-> 返回值
   init_time_ = Clock::NowInSeconds();//设置时间
 
   AINFO << "Control init, starting ..."; //LOG(INFO)
