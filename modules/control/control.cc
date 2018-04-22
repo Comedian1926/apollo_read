@@ -54,7 +54,7 @@ Status Control::Init() { //return_type function_name( parameter list )    ----  
 
   AINFO << "Conf file: " << FLAGS_control_conf_file << " is loaded.";
 
-  AdapterManager::Init(FLAGS_control_adapter_config_filename);//饶了一大圈就是开一个订阅
+  AdapterManager::Init(FLAGS_control_adapter_config_filename);//adapter_manager.cc饶了一大圈就是开一个订阅
 
   common::monitor::MonitorLogBuffer buffer(&monitor_logger_);
 

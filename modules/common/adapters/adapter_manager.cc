@@ -57,10 +57,13 @@ void AdapterManager::Init(const AdapterManagerConfig &configs) {
     instance()->node_handle_.reset(new ros::NodeHandle());
   }
 
+
+//adapter_manager.h --> #define REGISTER_ADAPTER(name) ##表示：把宏参数名与宏定义代码序列中的标识符连接在一起，形成一个新的标识符                                                \
+ --> node_handle_->subscribe 执行的就是订阅动作
   for (const auto &config : configs.config()) {
     switch (config.type()) {
       case AdapterConfig::POINT_CLOUD:
-        EnablePointCloud(FLAGS_pointcloud_topic, config); //node_handle_->subscribe 执行的就是订阅动作
+        EnablePointCloud(FLAGS_pointcloud_topic, config); //adapter_manager.h 中的宏定义
         break;
       case AdapterConfig::GPS:
         EnableGps(FLAGS_gps_topic, config);
