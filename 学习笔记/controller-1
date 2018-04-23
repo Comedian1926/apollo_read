@@ -1,0 +1,11 @@
+Apollo学习笔记：
+Controller:
+Part1问题：
+- 用gflags来，定义node name->为什么不直接用string /param/xml？
+- 用glog来，写日志->为什么不用rosout？
+- 用函数模版，读取配置proto文件 -> 理解✅
+- adapter msg接受消息自己写先入先出队列 -> 理解✅
+- 在Control::Init中（AdapterManager::Init）用宏定义##_name来定义void InternalEnable##name，来做subscriber的动作 -> 理解✅
+- 通过controller_agent::Init来初始化controller
+
+
