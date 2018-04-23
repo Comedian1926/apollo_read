@@ -24,6 +24,7 @@ modules/perception/cuda_util/build
 
 # IntelliJ files
 .idea
+.DS_Store
 
 # Vscode files
 .vscode

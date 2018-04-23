@@ -1,6 +1,5 @@
 Part2流程
-- APOLLO_MAIN(apollo::control::Control) -> log初始化 -> 实例化class Control（APP apollo_app_）->
--> controller_agent::Init -> ControllerAgent::RegisterControllers（选一个）
+- APOLLO_MAIN(apollo::control::Control) -> glog初始化 -> gflag初始化 -> 实例化class Control（APP apollo_app_）-> controller_agent::Init -> ControllerAgent::RegisterControllers（选一个）
 							| -> MPC_CONTROLLER模型预测控制
                                    			| -> LAT_CONTROLLER 横向控制
 							| -> LON_CONTROLLER 纵向控制
