@@ -121,7 +121,7 @@ void apollo_app_sigint_handler(int signal_num);
     signal(SIGINT, apollo::common::apollo_app_sigint_handler); \
     APP apollo_app_;//实例化函数
     ros::init(argc, argv, apollo_app_.Name());//程序开始的地方,apollo_app_.Name():gflags以命令行参数形式传入node name，c++中命令行 参数就是字符串
-    apollo_app_.Spin();//在这运行Control::Init
+    apollo_app_.Spin();//在这运行Control::Init/Control::Start
     return 0;                                                  \
   }
 
