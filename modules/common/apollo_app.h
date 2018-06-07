@@ -1,4 +1,4 @@
-/******************************************************************************
+  /******************************************************************************
  * Copyright 2017 The Apollo Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -114,15 +114,15 @@ void apollo_app_sigint_handler(int signal_num);
 }  // namespace apollo
 
 //宏定义
-#define APOLLO_MAIN(APP)                                       \
-  int main(int argc, char **argv) {                            \
-    google::InitGoogleLogging(argv[0]);//google glog -> 初始化 glog
+#define APOLLO_MAIN(APP) //APP->apollo::control::Control
+  int main(int argc, char **argv) {
+    google::InitGoogleLogging(argv[0]);               //google glog -> 初始化 glog
     google::ParseCommandLineFlags(&argc, &argv, true);//google gflags -> 解析命令行参数，一般都放在 main 函数中开始位置
     signal(SIGINT, apollo::common::apollo_app_sigint_handler); //csignal库-> signal(int sig, void (*func)(int))
     APP apollo_app_;//实例化函数
     ros::init(argc, argv, apollo_app_.Name());//程序开始的地方,apollo_app_.Name():gflags以命令行参数形式传入node name，c++中命令行 参数就是字符串
-    apollo_app_.Spin();//在这运行Control::Init/Control::Start
-    return 0;                                                  \
+    apollo_app_.Spin();//apollo_app.cc -> 在这运行Control::Init/Control::Start
+    return 0;
   }
 
 #endif  // MODULES_COMMON_APOLLO_APP_H_

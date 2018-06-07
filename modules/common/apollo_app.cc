@@ -54,19 +54,21 @@ void ApolloApp::ExportFlags() const {
 }
 
 int ApolloApp::Spin() {
-  auto status = Init();//运行Status Control::Init -> return Status::OK()
-  if (!status.ok()) //Status初始化列表 --> Status() : code_(ErrorCode::OK), msg_() {}
+  auto status = Init();//virtual apollo::common::Status Init() = 0; 纯虚函数->运行Status Control::Init -> return Status::OK()
+  if (!status.ok())    //Status初始化列表 --> Status() : code_(ErrorCode::OK), msg_() {}
   {
     AERROR << Name() << " Init failed: " << status;
     return -1;
   }
 
-//创建一个空的智能指针，只要unique_ptr指针创建成功，其析构函数都会被调用。确保动态资源被释放。
-//函数结束后,自动释放资源,防止接下来的代码由于抛出异常或者提前退出,而没有执行delete操作
+  //创建一个空的智能指针，只要unique_ptr指针创建成功，其析构函数都会被调用。确保动态资源被释放。
+  //函数结束后,自动释放资源,防止接下来的代码由于抛出异常或者提前退出,而没有执行delete操作
+
   std::unique_ptr<ros::AsyncSpinner> spinner;
   if (callback_thread_num_ > 1) {
-    spinner = std::unique_ptr<ros::AsyncSpinner>(
-        new ros::AsyncSpinner(callback_thread_num_));//创建线程
+    spinner = std::unique_ptr<ros::AsyncSpinner>(new ros::AsyncSpinner(callback_thread_num_));
+            //创建线程std::unique_ptr<T>(new T(int number)); 
+            //AsyncSpinner (uint32_t thread_count, CallbackQueue *queue)
   }
 
   status = Start(); // 运行Status Control::Start() -> return Status::OK();
@@ -80,7 +82,7 @@ int ApolloApp::Spin() {
   } else {
     ros::spin();
   }
-  ros::waitForShutdown();
+  ros::waitForShutdown();//等待触发Shutdown -> ros/init.cpp
   Stop();  //退出(由子类Control::Stop() 具体重写的)
   AINFO << Name() << " exited.";
   return 0;

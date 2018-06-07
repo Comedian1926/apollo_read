@@ -1,0 +1,39 @@
+Part2流程 - ApolloApp - where all models starting
+- APOLLO_MAIN(apollo::control::Control) //modules/common/apollo_app.h中的宏定义
+  |-1 -> glog初始化 			//google::InitGoogleLogging(argv[0]);  
+  |-2 -> gflag初始化  			//google::ParseCommandLineFlags(&argc, &argv, true);
+  |-3 -> 声明一个sinal的触发信号的handle  	//csignal库-> signal(int sig, void (*func)(int))
+  |-4 -> 实例化函数 APP apollo_app_; 	//APP->apollo::control::Control是传入的类型
+  |-5 -> ros初始化节点 			//ros::init(argc, argv, apollo_app_.Name());
+  |-6 -> 运行start->spin()		//apollo_app.cc -> apollo_app_.Spin();
+  |-7 -> return 0;			//返回
+
+
+|-6 int ApolloApp::Spin() 					//-1：初始化失败， -2:start失败， 0：正常退出
+  |-6.1 -> auto status = Init();				//初始化virtual apollo::common::Status Init() = 0; 纯虚函数由实类->Status Control::Init -> return Status::OK()运行
+  |-6.2 -> 判断是否初始化成功，初始化失败返回-1				//Status类，ok函数-> modules/common/status/status.h/bool ok() const { return code_ == ErrorCode::OK; }初始化列表赋值为true
+  |-6.3 -> std::unique_ptr<ros::AsyncSpinner> spinner;		//创建一个空的智能指针，只要unique_ptr指针创建成功，其析构函数都会被调用。确保动态资源被释放。
+  |-6.4 -> 如果线程数大于1，则创建多线程				//eg. std::unique_ptr<int> u3(new int); 
+  |-6.5 -> status = Start();					//spinner->start(); 开始程序virtual apollo::common::Status Start() = 0; 纯虚函数由实类->Status Control::Start() -> return Status::OK()运行
+  |-6.6 -> 判断是否开始程序成功，开始不成功返回-2			//如果不成功返回-2	
+  |-6.7 -> ExportFlags(); 					//调用void ApolloApp::ExportFlags
+  |-6.8 -> if (spinner) 					//判断spinner == NULL如果是则没有启动线程，运行ros::spin()
+  |-6.9 -> spinner->start();					//纯虚函数virtual apollo::common::Status Start() = 0; -> (由子类Status Control::Start() 具体重写的)
+  |-6.10 -> ros::waitForShutdown();				//等待触发Shutdown -> ros/init.cpp
+			/***************************************
+				void waitForShutdown()
+				{
+				  while (ok())
+				  {
+				    WallDuration(0.05).sleep();
+				  }
+				}
+
+			***************************************/
+
+  |-6.11 -> Stop();  						//退出(由子类Status Control::Stop() 具体重写的)
+  |-6.12 -> AINFO << Name() << " exited.";			//打印退出
+  |-6.13 -> return 0;						//返回
+
+
+
