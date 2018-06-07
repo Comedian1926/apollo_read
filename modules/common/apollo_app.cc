@@ -54,7 +54,7 @@ void ApolloApp::ExportFlags() const {
 }
 
 int ApolloApp::Spin() {
-  auto status = Init();//virtual apollo::common::Status Init() = 0; 纯虚函数->运行Status Control::Init -> return Status::OK()
+  auto status = Init();//virtual apollo::common::Status Init() = 0; 纯虚函数由子类实现->运行Status Control::Init -> return Status::OK()
   if (!status.ok())    //Status初始化列表 --> Status() : code_(ErrorCode::OK), msg_() {}
   {
     AERROR << Name() << " Init failed: " << status;
@@ -71,19 +71,19 @@ int ApolloApp::Spin() {
             //AsyncSpinner (uint32_t thread_count, CallbackQueue *queue)
   }
 
-  status = Start(); // 运行Status Control::Start() -> return Status::OK();
+  status = Start(); //virtual apollo::common::Status Start() = 0; 纯虚函数由子类实现->运行Status Control::Start() -> return Status::OK();
   if (!status.ok()) {
     AERROR << Name() << " Start failed: " << status;
     return -2;
   }
   ExportFlags(); //调用void ApolloApp::ExportFlags
   if (spinner) {
-    spinner->start();//消息线程开启ros::AsyncSpinner->start()
+    spinner->start(); //消息线程开启ros::AsyncSpinner->start()
   } else {
     ros::spin();
   }
   ros::waitForShutdown();//等待触发Shutdown -> ros/init.cpp
-  Stop();  //退出(由子类Control::Stop() 具体重写的)
+  Stop();  //virtual void Stop() = 0; 纯虚函数由子类实现->退出(由子类Control::Stop() 具体重写的)
   AINFO << Name() << " exited.";
   return 0;
 }

@@ -9,16 +9,18 @@ Part2流程 - ApolloApp - where all models starting
   |-7 -> return 0;			//返回
 
 
+------------------------------------------------------------------------------------------
+
 |-6 int ApolloApp::Spin() 					//-1：初始化失败， -2:start失败， 0：正常退出
-  |-6.1 -> auto status = Init();				//初始化virtual apollo::common::Status Init() = 0; 纯虚函数由实类->Status Control::Init -> return Status::OK()运行
+  |-6.1 -> auto status = Init();				//初始化   virtual apollo::common::Status Init() = 0; 纯虚函数由实类->Status Control::Init -> return Status::OK()运行
   |-6.2 -> 判断是否初始化成功，初始化失败返回-1				//Status类，ok函数-> modules/common/status/status.h/bool ok() const { return code_ == ErrorCode::OK; }初始化列表赋值为true
   |-6.3 -> std::unique_ptr<ros::AsyncSpinner> spinner;		//创建一个空的智能指针，只要unique_ptr指针创建成功，其析构函数都会被调用。确保动态资源被释放。
   |-6.4 -> 如果线程数大于1，则创建多线程				//eg. std::unique_ptr<int> u3(new int); 
-  |-6.5 -> status = Start();					//spinner->start(); 开始程序virtual apollo::common::Status Start() = 0; 纯虚函数由实类->Status Control::Start() -> return Status::OK()运行
+  |-6.5 -> status = Start();					//开始程序 virtual apollo::common::Status Start() = 0; 纯虚函数由实类->Status Control::Start() -> return Status::OK()运行
   |-6.6 -> 判断是否开始程序成功，开始不成功返回-2			//如果不成功返回-2	
   |-6.7 -> ExportFlags(); 					//调用void ApolloApp::ExportFlags
   |-6.8 -> if (spinner) 					//判断spinner == NULL如果是则没有启动线程，运行ros::spin()
-  |-6.9 -> spinner->start();					//纯虚函数virtual apollo::common::Status Start() = 0; -> (由子类Status Control::Start() 具体重写的)
+  |-6.9 -> spinner->start();					//消息线程开启ros::AsyncSpinner->start()
   |-6.10 -> ros::waitForShutdown();				//等待触发Shutdown -> ros/init.cpp
 			/***************************************
 				void waitForShutdown()
@@ -31,9 +33,18 @@ Part2流程 - ApolloApp - where all models starting
 
 			***************************************/
 
-  |-6.11 -> Stop();  						//退出(由子类Status Control::Stop() 具体重写的)
+  |-6.11 -> Stop();  						//virtual void Stop() = 0; 纯虚函数由子类实现->退出(由子类Status Control::Stop() 具体重写的)
   |-6.12 -> AINFO << Name() << " exited.";			//打印退出
   |-6.13 -> return 0;						//返回
 
 
+------------------------------------------------------------------------------------------
+
+|-6.7 void ApolloApp::ExportFlags() const
+  |-6.7.1 -> const auto export_file = util::StrCat(FLAGS_log_dir, "/", Name(), ".flags");
+  |-6.7.2 -> std::ofstream fout(export_file);
+  |-6.7.3 -> CHECK(fout) << "Cannot open file " << export_file;
+  |-6.7.4 -> std::vector<gflags::CommandLineFlagInfo> flags;
+  |-6.7.5 -> gflags::GetAllFlags(&flags);
+  |-6.7.6 -> for (const auto& flag : flags)
 
