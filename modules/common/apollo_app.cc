@@ -39,13 +39,26 @@ void ApolloApp::SetCallbackThreadNumber(uint32_t callback_thread_num) {
 }
 
 void ApolloApp::ExportFlags() const {
-  const auto export_file = util::StrCat(FLAGS_log_dir, "/", Name(), ".flags");
-  std::ofstream fout(export_file);
-  CHECK(fout) << "Cannot open file " << export_file;
+  const auto export_file = util::StrCat(FLAGS_log_dir, "/", Name(), ".flags");  
+  //    字符合成using google::protobuf::StrCat; 合成结果为输出文件的地址 *.flag
+  //    This merges the given strings or numbers, with no delimiter.  This
+  //    is designed to be the fastest possible way to construct a string out
+  //    of a mix of raw C strings, strings, bool values,
+  //    and numeric values.
+  //    StrCat supports appending up to 9 arguments
+  std::ofstream fout(export_file);      //通过fiostream.h中的ofstream写入flags参数到*.flag文件中
+  CHECK(fout) << "Cannot open file " << export_file;  //判断log文件是否可以打开，功能类似fout.is_open()
 
-  std::vector<gflags::CommandLineFlagInfo> flags;
-  gflags::GetAllFlags(&flags);
-  for (const auto& flag : flags) {
+  std::vector<gflags::CommandLineFlagInfo> flags;     //初始化一个所有flags的数组flags
+  gflags::GetAllFlags(&flags);                        //获取所有flags的数据到数组flags中
+  for (const auto& flag : flags) {                    //循环写入格式为：
+                                                      /****
+                                                            # 类型，default=***
+                                                            # 描述
+                                                            -- 名字=当前值” 
+                                                      ****/
+                                                      //的log到fout文件中，通过ofstream 的流“ << ”来写入
+
     fout << "# " << flag.type << ", default=" << flag.default_value << "\n"
          << "# " << flag.description << "\n"
          << "--" << flag.name << "=" << flag.current_value << "\n"

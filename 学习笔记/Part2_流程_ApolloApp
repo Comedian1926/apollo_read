@@ -12,13 +12,13 @@ Part2流程 - ApolloApp - where all models starting
 ------------------------------------------------------------------------------------------
 
 |-6 int ApolloApp::Spin() 					//-1：初始化失败， -2:start失败， 0：正常退出
-  |-6.1 -> auto status = Init();				//初始化   virtual apollo::common::Status Init() = 0; 纯虚函数由实类->Status Control::Init -> return Status::OK()运行
+  |-6.1 -> auto status = Init();				//virtual apollo::common::Status Init() = 0; 初始化, 纯虚函数由实类->Status Control::Init -> return Status::OK()运行
   |-6.2 -> 判断是否初始化成功，初始化失败返回-1				//Status类，ok函数-> modules/common/status/status.h/bool ok() const { return code_ == ErrorCode::OK; }初始化列表赋值为true
   |-6.3 -> std::unique_ptr<ros::AsyncSpinner> spinner;		//创建一个空的智能指针，只要unique_ptr指针创建成功，其析构函数都会被调用。确保动态资源被释放。
   |-6.4 -> 如果线程数大于1，则创建多线程				//eg. std::unique_ptr<int> u3(new int); 
-  |-6.5 -> status = Start();					//开始程序 virtual apollo::common::Status Start() = 0; 纯虚函数由实类->Status Control::Start() -> return Status::OK()运行
+  |-6.5 -> status = Start();					//virtual apollo::common::Status Start() = 0; 开始程序, 纯虚函数由实类->Status Control::Start() -> return Status::OK()运行
   |-6.6 -> 判断是否开始程序成功，开始不成功返回-2			//如果不成功返回-2	
-  |-6.7 -> ExportFlags(); 					//调用void ApolloApp::ExportFlags
+  |-6.7 -> ExportFlags(); 					//调用void ApolloApp::ExportFlags创建flags参数文件,并且写入flags参数,类似于log文件流的功能
   |-6.8 -> if (spinner) 					//判断spinner == NULL如果是则没有启动线程，运行ros::spin()
   |-6.9 -> spinner->start();					//消息线程开启ros::AsyncSpinner->start()
   |-6.10 -> ros::waitForShutdown();				//等待触发Shutdown -> ros/init.cpp
@@ -33,18 +33,33 @@ Part2流程 - ApolloApp - where all models starting
 
 			***************************************/
 
-  |-6.11 -> Stop();  						//virtual void Stop() = 0; 纯虚函数由子类实现->退出(由子类Status Control::Stop() 具体重写的)
+  |-6.11 -> Stop();  						//virtual void Stop() = 0; 停止程序， 纯虚函数由子类实现->退出(由子类Status Control::Stop() 具体重写的)
   |-6.12 -> AINFO << Name() << " exited.";			//打印退出
   |-6.13 -> return 0;						//返回
 
 
 ------------------------------------------------------------------------------------------
 
-|-6.7 void ApolloApp::ExportFlags() const
-  |-6.7.1 -> const auto export_file = util::StrCat(FLAGS_log_dir, "/", Name(), ".flags");
-  |-6.7.2 -> std::ofstream fout(export_file);
-  |-6.7.3 -> CHECK(fout) << "Cannot open file " << export_file;
-  |-6.7.4 -> std::vector<gflags::CommandLineFlagInfo> flags;
-  |-6.7.5 -> gflags::GetAllFlags(&flags);
-  |-6.7.6 -> for (const auto& flag : flags)
+|-6.7 void ApolloApp::ExportFlags() const							//创建flags参数文件,并且写入flags参数,类似于log文件流的功能
+  |-6.7.1 -> const auto export_file = util::StrCat(FLAGS_log_dir, "/", Name(), ".flags");	//字符合成using google::protobuf::StrCat; 合成结果为输出文件的地址 *.flag
+			/***************************************
+  			    This merges the given strings or numbers, with no delimiter.  This
+  			    is designed to be the fastest possible way to construct a string out
+  			    of a mix of raw C strings, strings, bool values,
+  			    and numeric values.
+  			    StrCat supports appending up to 9 arguments
+			***************************************/
+
+  |-6.7.2 -> std::ofstream fout(export_file);							//通过fiostream.h中的ofstream写入flags参数到*.flag文件中
+  |-6.7.3 -> CHECK(fout) << "Cannot open file " << export_file;					//判断log文件是否可以打开，功能类似fout.is_open()
+  |-6.7.4 -> std::vector<gflags::CommandLineFlagInfo> flags;					//初始化一个所有flags的数组flags
+  |-6.7.5 -> gflags::GetAllFlags(&flags);							//获取所有flags的数据到数组flags中
+  |-6.7.6 -> for (const auto& flag : flags)							//循环写入格式为：
+                        /***************************************
+                            # 类型，default=***
+                            # 描述
+                            -- 名字=当前值” 
+                        ***************************************/
+                        //的log到fout文件中，通过ofstream 的流“ << ”来写入
+
 

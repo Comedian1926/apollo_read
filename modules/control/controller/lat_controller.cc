@@ -265,6 +265,9 @@ std::string LatController::Name() const {
   return name_;
 }
 
+
+
+//这里计算cmd命令
 Status LatController::ComputeControlCommand(
     const localization::LocalizationEstimate *localization,
     const canbus::Chassis *chassis,
@@ -315,7 +318,7 @@ Status LatController::ComputeControlCommand(
 
   const double steer_angle_feedforward = ComputeFeedForward(debug->curvature());
 
-  // Clamp the steer angle to -100.0 to 100.0
+  // Clamp the steer angle to -100.0 to 100.0  约束命令到-100～100度之间
   double steer_angle = common::math::Clamp(
       steer_angle_feedback + steer_angle_feedforward, -100.0, 100.0);
 

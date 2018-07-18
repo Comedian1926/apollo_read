@@ -1,6 +1,25 @@
-- Status Control::Init
+Part2流程 - Controller - control model
 
-  | -> 实例化class Control（APP apollo_app_）-> controller_agent::Init -> ControllerAgent::RegisterControllers（选一个）
+首先，在ApolloApp中的模块调用流程是：
+				Init()
+				  |
+				Start()
+				  |
+				Stop()
+
+	
+大致流程：
+实例化class Control（APP apollo_app_）-> controller_agent::Init -> ControllerAgent::RegisterControllers（选一个）
 							| -> MPC_CONTROLLER模型预测控制
                                    			| -> LAT_CONTROLLER 横向控制
 							| -> LON_CONTROLLER 纵向控制
+
+
+- Status Control::Init
+  |-1 -> init_time_ = Clock::NowInSeconds();					//设置初始化时间，其中Clock -> apollo::common::time::Clock
+  |-2 -> AINFO << "****"; 							//类似于LOG(INFO)打印
+  |-3 -> AdapterManager::Init(FLAGS_control_adapter_config_filename);		//初始化AdapterManager -> adapter_manager.cc饶了一大圈就是开一个订阅
+  |-4 ->
+  |-4 ->
+  |-4 ->
+

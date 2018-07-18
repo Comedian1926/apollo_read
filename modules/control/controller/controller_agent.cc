@@ -96,6 +96,8 @@ Status ControllerAgent::Init(const ControlConf *control_conf) {
   return Status::OK();
 }
 
+
+//计算cmd命令
 Status ControllerAgent::ComputeControlCommand(
     const localization::LocalizationEstimate *localization,
     const canbus::Chassis *chassis, const planning::ADCTrajectory *trajectory,
@@ -103,7 +105,7 @@ Status ControllerAgent::ComputeControlCommand(
   for (auto &controller : controller_list_) {
     ADEBUG << "controller:" << controller->Name() << " processing ...";
     double start_timestamp = Clock::NowInSeconds();
-    controller->ComputeControlCommand(localization, chassis, trajectory, cmd);
+    controller->ComputeControlCommand(localization, chassis, trajectory, cmd);  //mpc.ComputeControlCommand
     double end_timestamp = Clock::NowInSeconds();
     const double time_diff_ms = (end_timestamp - start_timestamp) * 1000;
 
